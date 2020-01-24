@@ -1,0 +1,2 @@
+Trying to navigate to http://prestashop-automation.qatestlab.com.ua/ru/
+Navigated to http://prestashop-automation.qatestlab.com.ua/ru/ successfully
