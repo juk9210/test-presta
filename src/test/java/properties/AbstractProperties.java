@@ -43,7 +43,7 @@ public abstract class AbstractProperties {
     }
 
     private static WebDriver getOurDriver() {
-        System.setProperty( "webdriver.chrome.driver", "D:\\Java\\test-presta\\src\\main\\resources\\chromedriver.exe" );
+        System.setProperty( "webdriver.chrome.driver", new File( AbstractProperties.class.getResource("/chromedriver.exe").getFile()).getPath() );
         return new ChromeDriver();
     }
 }
