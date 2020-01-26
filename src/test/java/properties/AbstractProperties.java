@@ -11,14 +11,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractProperties {
-    private static EventFiringWebDriver driver;
+/**
+ * Class with settings for testing
+ *
+ * @author Shakhov Yevhen.
+ */
 
+public abstract class AbstractProperties {
+
+    /**
+     * Method for writing logs to console.
+     *
+     * @param message
+     */
     public static void log(String message) {
         Reporter.log( message );
         System.out.println( message );
     }
 
+    /**
+     * Method for writing logs to file.
+     */
     public static void writeLogs() {
         File logsFile = new File( "Logs.txt" );
         try (BufferedWriter bw = new BufferedWriter( new FileWriter( logsFile ) )) {
@@ -29,10 +42,11 @@ public abstract class AbstractProperties {
         EventHandler.sb = new StringBuilder();
     }
 
-    public static WebDriver getDriver() {
-        return driver;
-    }
-
+    /**
+     * Method for obtaining driver settings.
+     *
+     * @return
+     */
     public static EventFiringWebDriver getConfigures() {
         WebDriver driver = getOurDriver();
         driver.manage().window().maximize();
@@ -42,8 +56,13 @@ public abstract class AbstractProperties {
         return eventFiringWebDriver;
     }
 
+    /**
+     * Driver acquisition method.
+     *
+     * @return
+     */
     private static WebDriver getOurDriver() {
-        System.setProperty( "webdriver.chrome.driver", new File( AbstractProperties.class.getResource("/chromedriver.exe").getFile()).getPath() );
+        System.setProperty( "webdriver.chrome.driver", new File( AbstractProperties.class.getResource( "/chromedriver.exe" ).getFile() ).getPath() );
         return new ChromeDriver();
     }
 }

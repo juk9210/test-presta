@@ -8,11 +8,16 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import java.util.Arrays;
 
+/**
+ * Class that will handle events
+ *
+ * @author Shakhov Yevhen.
+ */
 public class EventHandler implements WebDriverEventListener {
     static StringBuilder sb = new StringBuilder();
 
     /**
-     * Method for writing correct log for events
+     * Method for writing log for events.
      *
      * @param message
      */
@@ -22,7 +27,7 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     /**
-     * Getting the name of web element.
+     * Method to get the name of the web element.
      *
      * @param webElement
      * @return
@@ -42,23 +47,23 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     public void beforeAlertAccept(WebDriver webDriver) {
-        log( "Trying to accept alert." );
+        log( "Attempt to accept warning." );
     }
 
     public void afterAlertAccept(WebDriver webDriver) {
-        log( "Alert is accepted successfully." );
+        log( "Alert received successfully." );
     }
 
     public void afterAlertDismiss(WebDriver webDriver) {
-        log( "Dismiss is canceled successfully." );
+        log( "Dismissal successfully canceled." );
     }
 
     public void beforeAlertDismiss(WebDriver webDriver) {
-        log( "Trying to cancel alert." );
+        log( "Attempt to cancel warning." );
     }
 
     public void beforeNavigateTo(String s, WebDriver webDriver) {
-        log( "Trying to navigate to " + s );
+        log( "Try to go to " + s );
 
     }
 
@@ -68,7 +73,7 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     public void beforeNavigateBack(WebDriver webDriver) {
-        log( "Trying to navigate back." );
+        log( "Attempt to go back." );
     }
 
     public void afterNavigateBack(WebDriver webDriver) {
@@ -76,7 +81,7 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     public void beforeNavigateForward(WebDriver webDriver) {
-        log( "Trying to navigate forward." );
+        log( "Attempt to move forward." );
     }
 
     public void afterNavigateForward(WebDriver webDriver) {
@@ -84,11 +89,11 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     public void beforeNavigateRefresh(WebDriver webDriver) {
-        log( "Trying to refresh." );
+        log( "Attempt to update." );
     }
 
     public void afterNavigateRefresh(WebDriver webDriver) {
-        log( "The page is refreshed successfully" );
+        log( "Page Updated Successfully" );
     }
 
     public void beforeFindBy(By by, WebElement webElement, WebDriver webDriver) {
@@ -96,11 +101,11 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     public void afterFindBy(By by, WebElement webElement, WebDriver webDriver) {
-        log( "Founds successfully" );
+        log( "Found successfully" );
     }
 
     public void beforeClickOn(WebElement webElement, WebDriver webDriver) {
-        log( "Trying to click on " + getElement( webElement ) );
+        log( "Attempt to click on " + getElement( webElement ) );
     }
 
     public void afterClickOn(WebElement webElement, WebDriver webDriver) {
@@ -108,15 +113,15 @@ public class EventHandler implements WebDriverEventListener {
     }
 
     public void beforeChangeValueOf(WebElement webElement, WebDriver webDriver, CharSequence[] charSequences) {
-        log( "Trying to change value of " + getElement( webElement ) + " on " + Arrays.toString( charSequences ) );
+        log( "Attempt to change value of " + getElement( webElement ) + " on " + Arrays.toString( charSequences ) );
     }
 
     public void afterChangeValueOf(WebElement webElement, WebDriver webDriver, CharSequence[] charSequences) {
-        log( getElement( webElement ) + " changed on " + Arrays.toString( charSequences ) + " successfully" );
+        log( "WebElement changed on " + Arrays.toString( charSequences ) + " successfully" );
     }
 
     public void beforeScript(String s, WebDriver webDriver) {
-        log( "Trying to execute script " + s );
+        log( "Attempt to execute a script " + s );
     }
 
     public void afterScript(String s, WebDriver webDriver) {

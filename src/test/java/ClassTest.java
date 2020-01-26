@@ -29,7 +29,7 @@ public class ClassTest extends AbstractProperties {
 
     @Test
     public void test() {
-        HomePage homePage = new HomePage();
+        HomePage homePage = new HomePage( eDriver );
         homePage.currencySelection( Currency.USD );
         Assert.assertTrue( homePage.currencyCheckOnThePage( Currency.USD ) );
 
@@ -41,12 +41,14 @@ public class ClassTest extends AbstractProperties {
 
         homePage.currencySelection( Currency.USD );
 
-        SortingPage sortingPage = homePage.productSearch( "dress" );
+        homePage.productSearch( "dress" );
+        SortingPage sortingPage = new SortingPage( eDriver );
         Assert.assertEquals( sortingPage.getResultOnPage(), "Товаров: " + sortingPage.getAllProducts() + "." );
         Assert.assertTrue( sortingPage.currencyCheck( Currency.USD ) );
         sortingPage.sortingSelection();
         Assert.assertTrue( sortingPage.checkingCorrectSorting() );
         Assert.assertTrue( sortingPage.checkDiscountProducts() );
+        Assert.assertTrue( sortingPage.checkPricesBeforeAndAfterDiscount() );
     }
 
     /**

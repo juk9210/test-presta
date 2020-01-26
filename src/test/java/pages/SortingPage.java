@@ -2,9 +2,11 @@ package pages;
 
 import com.google.common.collect.Ordering;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import properties.AbstractProperties;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,14 @@ public class SortingPage extends HomePage {
     private final By basicPricesOfDiscountProducts = By.xpath( "//span[@class='regular-price']" );
     private final String sortingURL = "http://prestashop-automation.qatestlab.com.ua/ru/search?controller=search&order=product.price.desc&s=dress";
 
+    /**
+     * Class constructor.
+     *
+     * @param driver
+     */
+    public SortingPage(WebDriver driver) {
+        super( driver );
+    }
 
     /**
      * Get the inscription of the quantity of goods
@@ -37,7 +47,7 @@ public class SortingPage extends HomePage {
     }
 
     /**
-     * Get the number of products found
+     * Get the number of products found.
      *
      * @return
      */
@@ -47,7 +57,7 @@ public class SortingPage extends HomePage {
     }
 
     /**
-     * Checking currency
+     * Checking currency.
      *
      * @param currency
      * @return
@@ -55,7 +65,7 @@ public class SortingPage extends HomePage {
     public boolean currencyCheck(Currency currency) {
         waitElement( basicPrices );
         List<WebElement> prices = driver.findElements( basicPrices );
-        AbstractProperties.log( "Verifying that all the products contain $ currency symbol" );
+        AbstractProperties.log( "Check that all products have currency - $" );
         for (WebElement pr : prices) {
             if (!pr.getText().contains( "$" )) {
                 AbstractProperties.log( pr.getText() + " not in currency $" );
@@ -67,7 +77,7 @@ public class SortingPage extends HomePage {
     }
 
     /**
-     * Sorting goods
+     * Sorting goods - "from high to low".
      */
     public void sortingSelection() {
         waitElement( sortButton );
@@ -77,7 +87,7 @@ public class SortingPage extends HomePage {
     }
 
     /**
-     * Checking the correct sorting
+     * Checking the correct sorting.
      *
      * @return
      * @throws InterruptedException
@@ -86,7 +96,7 @@ public class SortingPage extends HomePage {
         waitURL( sortingURL );
         List<WebElement> prices = driver.findElements( basicPrices );
         List<String> values = new ArrayList<String>();
-        AbstractProperties.log( "Verifying sorting method \"prices: from high to low\"" );
+        AbstractProperties.log( "Checking the correct sorting - from high to low" );
         for (WebElement element : prices) {
             values.add( element.getText() );
         }
@@ -95,12 +105,12 @@ public class SortingPage extends HomePage {
             AbstractProperties.log( "Items are not sorted correctly" );
             return false;
         }
-        AbstractProperties.log( "Products are sorted correctly." );
+        AbstractProperties.log( "Items are sorted correctly" );
         return true;
     }
 
     /**
-     * Check that discounted goods are indicated - old price, discount, discount price
+     * Check that discounted goods are indicated - old price, discount, discount price.
      *
      * @return
      */
@@ -109,11 +119,11 @@ public class SortingPage extends HomePage {
         List<WebElement> discountsPrices = driver.findElements( discountPrices );
         List<WebElement> discounts = driver.findElements( discount );
         List<WebElement> basicPricesOfDiscountsProducts = driver.findElements( basicPricesOfDiscountProducts );
-        AbstractProperties.log( "Verifying each product on-sale to has a label with discount, actual and regular price" );
+        AbstractProperties.log( "checking each item at a discount - has a base price, a percentage discount, a discount price" );
         AbstractProperties.log( "Found: " + productsWithDiscounts.size() + " products with discount" );
         AbstractProperties.log( "Found: " + discounts.size() + " product signs of discount" );
-        AbstractProperties.log( "Found: " + basicPricesOfDiscountsProducts.size() + " regular prices of discount products" );
-        AbstractProperties.log( "Found: " + discountsPrices.size() + " actual prices of discount products" );
+        AbstractProperties.log( "Found: " + basicPricesOfDiscountsProducts.size() + " base prices of discount products" );
+        AbstractProperties.log( "Found: " + discountsPrices.size() + " discount prices of discount products" );
         for (WebElement element : discounts) {
             if (element.getText().contains( "%" )) {
                 AbstractProperties.log( "Element: " + element.getText() + " contains discount!" );
@@ -123,13 +133,48 @@ public class SortingPage extends HomePage {
             }
         }
         if (productsWithDiscounts.size() == discountsPrices.size() && productsWithDiscounts.size() == discounts.size() && productsWithDiscounts.size() == basicPricesOfDiscountsProducts.size()) {
-            AbstractProperties.log( "Quantity of products with discount: " + productsWithDiscounts.size() + " equals to quantity of discount signs: " + discountsPrices.size() );
-            AbstractProperties.log( "Quantity of products with discount: " + productsWithDiscounts.size() + " equals to quantity of regular prices: " + discounts.size() );
-            AbstractProperties.log( "Quantity of products with discount: " + productsWithDiscounts.size() + " equals to quantity of actual prices: " + basicPricesOfDiscountsProducts.size() );
+            AbstractProperties.log( "Quantity of goods at a discount: " + productsWithDiscounts.size() +
+                    "equal to the number of discount signs: " + discountsPrices.size() );
+            AbstractProperties.log( "Quantity of goods at a discount: " + productsWithDiscounts.size() +
+                    " equal to the number of base prices: " + discounts.size() );
+            AbstractProperties.log( "Quantity of goods at a discount: " + productsWithDiscounts.size() +
+                    " equal to the number of discount prices: " + basicPricesOfDiscountsProducts.size() );
             return true;
         } else {
-            AbstractProperties.log( "Quantity of products with discount doesn't to one of parameters" );
+            AbstractProperties.log( "The number of discounted goods does not match any of the parameters" );
             return false;
         }
     }
+
+    /**
+     * Check that the discounted price on the page matches the calculated value.
+     *
+     * @return
+     */
+    public boolean checkPricesBeforeAndAfterDiscount() {
+        List<WebElement> productsWithDiscounts = driver.findElements( productsWithDiscount );
+        List<WebElement> basicPricesOfDiscountsProducts = driver.findElements( basicPricesOfDiscountProducts );
+        List<WebElement> discounts = driver.findElements( discount );
+        List<WebElement> discountsPrices = driver.findElements( discountPrices );
+        DecimalFormat decimalFormat = new DecimalFormat( "##.00" );
+        AbstractProperties.log( "Check whether the price with the percentage value is calculated correctly" );
+        for (int i = 0; i < productsWithDiscounts.size(); i++) {
+            int discountPercentage = Integer.parseInt( discounts.get( i ).getText().replace( "%", "" ) );
+            float basicPrice = Float.parseFloat( basicPricesOfDiscountsProducts.get( i ).getText().substring( 0, 4 ).replace( ",", "." ) );
+            float discountPriceOnPage = Float.parseFloat( discountsPrices.get( i ).getText().substring( 0, 4 ).replace( ",", "." ) );
+            float discountValue = Float.parseFloat( decimalFormat.format( (basicPrice * (Math.abs( discountPercentage ))) / 100 ).replace( ",", "." ) );
+            float discountPrice = basicPrice - discountValue;
+            if (discountPrice != discountPriceOnPage) {
+                AbstractProperties.log( "The price before and after the discount not matches the specified size " +
+                        "discounts : \nprice before discount - " + basicPrice + "\ndiscount - " + discountPercentage +
+                        "\nprice after discount - " + discountPriceOnPage + "\nsettlement price - " + discountPrice );
+                return false;
+            }
+            AbstractProperties.log( "The price before and after the discount matches the specified size " +
+                    "discounts : \nprice before discount - " + basicPrice + "\ndiscount - " + discountPercentage +
+                    "\nprice after discount - " + discountPriceOnPage + "\nsettlement price - " + discountPrice );
+        }
+        return true;
+    }
+
 }
